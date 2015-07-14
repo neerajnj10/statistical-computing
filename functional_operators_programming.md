@@ -1,0 +1,82 @@
+author-neeraj kumar
+--------
+
+### Functionals
+
+#### Explain your code where appropriate.
+
+Newton's method for finding a root of a differentiable function $f$ takes a guess $y$ and computes hopfully an improved guess as:
+$$ y - \frac{f(y)}{Df(y)}$$
+where $Df$ denotes the derivative of $f$.
+
+1. Create a function called `newton_search` with four arguments: `f`, `df`, `guess`, `conv` (the convergence criterion).
+```{r}
+newton_search <- function(f, df, guess = 0, conv=0.001){
+    y <- guess
+
+ 
+    new.ton <- function(y.i){
+        y.i - y
+    }
+
+    repeat{
+        y.i <- y - f(y)/df(y)
+        if(new.ton(y.i) < conv){
+            break
+        } else{
+            y <- y.i
+        }
+    }
+    return(y)
+}
+```
+Hint: Define a local functions (or helper function) to compute the improvement and then test for convengence.
+
+2. Use this function to find the root of $sin(x)$ near 3 using the actual symbolic derivative. The exact answer is $\pi$.
+```{r}
+newton_search(f = sin, df = cos, guess = 3, conv = 0.001)
+```
+
+3. In general you may not be able to compute the derivative exactly. Use the symmetric difference quotient to approxiate the derivative of $f$ at $x$ numerically by the defintion:
+$$ Df \approx \frac{f(x + h) - f(x - h)}{2h} $$
+for small $h$.
+
+Define a function `make_derivative` with arguments `f` and `h`. The result returned should be a function closure that remembers both `f` and `h`.
+```{r}
+make_derivative <- function(f, h){
+    function(x) (f(x + h) - f(x - h)) / (2*h)
+}
+```
+
+4. Find the root of $sin(x)$ near 3 using numerical derivatives. 
+```{r}
+num.sin <- make_derivative(f = sin, h = .01)
+newton_search(f = sin, df = num.sin, guess = 3)
+```
+
+5. The log-likelihood of the gamma distribution with scale parameter 1 can be written as:
+$$ (\alpha -1)s -n\log\Gamma(\alpha) $$
+where $\alpha$ is the shape parameter and $s = \sum X_i$ is the sufficient statistic.
+
+Randomly draw a sample of $n = 30$ with a shape parameter of $\alpha = 4.5$. Using `newton_search` and `make_derivative`, find the maximun likelihood estimate of $\alpha$. Use the moment esitmator of $\alpha$, i.e., $\bar X$ as the intial guess. The log-likelihood function in R is:
+```{r}
+x <- rgamma(n=30, shape=4.5)
+gllik <- function() {
+    s <- sum(log(x))
+    n <- length(x)
+    function(a) {
+        (a - 1) * s - n * lgamma(a)
+    }
+}
+set.seed(123)
+gllik.x <- gllik()
+gl1.gllik.x <- make_derivative(gllik.x, 0.01)
+gl2.gllik.x <- make_derivative(gl1.gllik.x, 0.01)
+
+## estimate
+newton_search(f = gl1.gllik.x, df = gl2.gllik.x, guess = mean(x))
+```
+Hint: You must apply `newton_search` to the first and second derivatives (derived numerically using `make_derivative`) of the log-likelihood. Your answer should be near 4.5.
+
+
+
