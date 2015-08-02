@@ -5,6 +5,8 @@ Stat 523
 
 #### Explain your code where appropriate.
 
+
+
 You should turn in this .Rmd file as well as the corresponding .html file. I should be able to execute the .Rmd file. You may want to develop the code using a separate .R file. You may want to add arguments to some of the functions below, e.g., alpha = 0.05 for testing.
 
 Develop an S3 class to estimate the relevant parameters in a one-way AOV with possibly unequal sample sizes (e.g., see Dowdy and Wearden, Statistics for Research, Wiley). You can use some of the code from Assignment 2.
@@ -14,7 +16,34 @@ Develop an S3 class to estimate the relevant parameters in a one-way AOV with po
 oneway <- function(z, ...) UseMethod("oneway")
 
 oneway.default <- function(z, ...) {
-## Your code here
+
+    
+    l <- length(z)
+    N <- length(unlist(z))
+    sums <- sum(unlist(z)^2)
+    g <- sum(sapply(z, function(x) sum(x)^2/length(x)))
+    h <- sum(unlist(z))^2/N
+    
+    sum.wit <- g - h ## within
+    sum.bet <- sums - g ## between
+    df.wit <- l - 1 
+    df.bet <- N - l 
+    m <- unlist(lapply(z, mean))
+    n <- unlist(lapply(z, length))
+    
+    if(is.null(names(z))){
+        groups <- as.character(1:length(z))
+    }
+    else{
+        groups <- names(z)
+    }
+    names(m) <- groups
+    ## create object, add class, & return
+    res <- list(df = c(df.wit, df.bet), SS = c(sum.wit, sum.bet),
+                groups = groups, call = match.call(), data = z,
+                means = m, n = n, N = N, l = l)
+    class(res) <- "oneway"
+    return(res)
 }
 ```
 The *z* argument for **oneway.default** should be a list of (possibly) named components, one for each sample. The computations for the one-way ANOVA should be done in **oneway.default**.
