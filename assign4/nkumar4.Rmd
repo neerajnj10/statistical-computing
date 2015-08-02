@@ -51,7 +51,9 @@ The *z* argument for **oneway.default** should be a list of (possibly) named com
 #### 2. This method uses the more standard input of a factor representing groups (or samples) and a numeric response.
 ```{r oneway.factor}
 oneway.factor <- function(z, y, ...) {
-## Your code here
+    responses <- oneway.default(split(y, z))
+    responses$call <- match.call()
+    responses
 }
 ```
 The *z* argument should be the factor with levels representing samples. The factor should be used to deconstruct *y*, the response, into a list as in the default.
@@ -59,7 +61,10 @@ The *z* argument should be the factor with levels representing samples. The fact
 #### 3. The model formula is the standard for R models, but do not use **model.matrix** to implement **oneway**.
 ```{r oneway.formula}
 oneway.formula <- function(formula, data=list(), ...) {
-## Your code here
+    frames <- model.frame(formula, data)
+    responses <- oneway.factor(frames[,2], frames[,1])
+    responses$call <- match.call()
+    responses
 }
 ```
 You might want to extract the factor term and the response from the **model.frame** and then call **oneway.factor**, which in turn calls **oneway.default**.
@@ -67,15 +72,40 @@ You might want to extract the factor term and the response from the **model.fram
 #### 4. The default **print** method should be short and provide essential information.
 ```{r print.oneway}
 print.oneway <- function(x, ...) {
-  
-## Your code here
+   print(x$call)
+   cat("\nWithin SS:", x$SS[1], "on", x$df[1],
+       "degrees of freedom.\n")
+   cat("Between SS:", x$SS[2], "on", x$df[2],
+       "degrees of freedom.\n")
 }
 ```
 
 #### 5. The summary method should create a summary object---not print directly.
 ```{r summary.oneway}
 summary.oneway <- function(object, ...) {
-## Your code here
+    attach(object)
+   
+    SS.tot <- SS[1] + SS[2]
+    DF.tot <- df[1] + df[2]
+    
+    MS.wit <- SS[1]/df[1]
+    MS.bet <- SS[2]/df[2]
+    
+    F <- MS.wit/MS.bet
+    p <- pf(F, df[1], df[2], lower.tail = FALSE)
+
+    aov.table <- with(object, cbind(DF = c(df, DF.tot),
+                         SS = c(SS, SS.tot),
+                         MS = c(MS.wit, MS.bet, NA),
+                         F = c(F, NA, NA),
+                         "Pr(>F)" = c(p, NA, NA)))
+    rownames(aov.tab) <- c("Among Group", "Within Group",
+                       "Total")
+    res <- list(call=call, aov.table=aov.table, groups=groups, means=means,
+                P = p, MS = c(MS.wit,MS.bet), n = n, N = N, l = l)
+    class(res) <- "summary.oneway"
+    detach(object)
+    return(res)
 }
 ```
 The argument is a **oneway** object. The summary object should include a component representing an AOV table, e.g., see Dowdy and Wearden. You might want to decide whether objects of class *summary.oneway* inherit from the class *oneway*.
@@ -83,23 +113,54 @@ The argument is a **oneway** object. The summary object should include a compone
 #### 6. The print method for the summary object should provide more detailed information about the summary object.
 ```{r print.summary.oneway}
 print.summary.oneway <- function(x, ...) {
-## Your code here
+    
+    cat("print: \n\t")
+    print(x$call)
+    cat("\nMeans:\n")
+    print(x$means)
+    cat("\n")
+    
+    
+    # AOV Table
+    
+    printCoefmat(x$aov.table, P.values=TRUE, has.Pvalue=TRUE, signif.stars=TRUE, na.print="")
 }
 ```
 The  AOV table should be formatted nicely. The least squares means should also be formated and printed.
 
 #### 7. Implement Fisher's LSD multiple comparison procedure for your oneway.
 ```{r lsmeans.oneway}
+
 lsmeans.oneway <- function(object, ...) {
-## Your code here
+    object <- summary(object)
+   
+    comparison <- function(i, j){
+        d <- object$means[i] - object$means[j]
+        SE <- sqrt(object$MS[2]*(1/object$n[i] + 1/object$n[j]))
+        d.se <- d/SE
+        round(2*pt(abs(d.se), object$N-object$l, lower.tail=FALSE),4)
+    }
+    p.se <- pairwise.table(compare.levels=compare,
+                             level.names=object$groups,
+                             p.adjust.method="none")
+    result <- list(p.value=p.se, call=match.call())
+    class(result) <- "lsmeans"
+    result
+}
+print.lsmeans <- function(x, ...){
+    cat("Call:\n\t")
+    print(x$call)
+    cat("\nFisher's LSD Table\n")
+    cat("\nP-Values:\n")
+    print.table(x$p.value, na.print="-")
 }
 ```
 The argument is a *oneway* object, which should include the least-squares means as a component. Fisher's LSD should be computed and formatted nicely.
 
 #### 8. A plot generic function should be implemented for *oneway* objects.
 ```{r plot.oneway}
-plot.oneway <- function(x, ...) {
-## Your code here
+plot.oneway <- function(x, names=x$groups, xlab="Groups", main=capture.output(x$call)){
+    boxplot(x=x$data, names=names, xlab=xlab,  main=main)
 }
 ```
 The plot should compare the distributions of the groups in a side-by-side manner.
@@ -109,8 +170,37 @@ The plot should compare the distributions of the groups in a side-by-side manner
 library(faraway)
 data(coagulation)
 coagulation[1:4,]
-## Your implementation code here
 ```
-You should provide brief explanations of the output along with the output, which implies that you may want multiple chucks of R code interspersed with markdown.
 
+```{r}
+attach(coagulation)
+grouping <- split(x = coag, f = diet)
+oneway.default(grouping)
+```
+
+Results are similar in both cases.
+Now lest try out our AOV function.
+
+```{r}
+#analysis ofvariance
+coag.oneway <- oneway.default(grouping)
+summary(coag.oneway)
+```
+
+
+
+```{r}
+#Fisher's LSD
+lsmeans.oneway(coag.oneway)
+```
+
+
+Finally we visualize the results by plotting them with our function.
+
+```{r}
+plot.oneway(coag.oneway)
+```
+
+
+You should provide brief explanations of the output along with the output, which implies that you may want multiple chucks of R code interspersed with markdown.
 
