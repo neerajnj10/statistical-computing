@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Stat 523</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: #990073
+   }
+
+   pre .number {
+     color: #099;
+   }
+
+   pre .comment {
+     color: #998;
+     font-style: italic
+   }
+
+   pre .keyword {
+     color: #900;
+     font-weight: bold
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: #d14;
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h2>Stat 523</h2>
+
+<h3>Assignment 4: One-Way S3 Implementation</h3>
+
+<h4>Explain your code where appropriate.</h4>
+
+<p>You should turn in this .Rmd file as well as the corresponding .html file. I should be able to execute the .Rmd file. You may want to develop the code using a separate .R file. You may want to add arguments to some of the functions below, e.g., alpha = 0.05 for testing.</p>
+
+<p>Develop an S3 class to estimate the relevant parameters in a one-way AOV with possibly unequal sample sizes (e.g., see Dowdy and Wearden, Statistics for Research, Wiley). You can use some of the code from Assignment 2.</p>
+
+<h4>1. Develop a default method, <strong>oneway.default</strong>,  for the  generic function <strong>oneway</strong>.</h4>
+
+<pre><code class="r">oneway.default &lt;- function(z, ...) {
+
+    l &lt;- length(z)
+    N &lt;- length(unlist(z))
+    sums &lt;- sum(unlist(z)^2)
+    g &lt;- sum(sapply(z, function(x) sum(x)^2/length(x)))
+    h &lt;- sum(unlist(z))^2/N
+
+    sum.wit &lt;- g - h ## within
+    sum.bet &lt;- sums - g ## between
+    df.wit &lt;- l - 1 
+    df.bet &lt;- N - l 
+    m &lt;- unlist(lapply(z, mean))
+    n &lt;- unlist(lapply(z, length))
+
+    if(is.null(names(z))){
+        groups &lt;- as.character(1:length(z))
+    }
+    else{
+        groups &lt;- names(z)
+    }
+    names(m) &lt;- groups
+    ## create object, add class, &amp; return
+    res &lt;- list(df = c(df.wit, df.bet), SS = c(sum.wit, sum.bet),
+                groups = groups, call = match.call(), data = z,
+                means = m, n = n, N = N, l = l)
+    class(res) &lt;- &quot;oneway&quot;
+    return(res)
+}
+</code></pre>
+
+<p>The <em>z</em> argument for <strong>oneway.default</strong> should be a list of (possibly) named components, one for each sample. The computations for the one-way ANOVA should be done in <strong>oneway.default</strong>.</p>
+
+<h4>2. This method uses the more standard input of a factor representing groups (or samples) and a numeric response.</h4>
+
+<pre><code class="r">oneway.factor &lt;- function(z, y, ...) {
+    responses &lt;- oneway.default(split(y, z))
+    responses$call &lt;- match.call()
+    responses
+}
+</code></pre>
+
+<p>The <em>z</em> argument should be the factor with levels representing samples. The factor should be used to deconstruct <em>y</em>, the response, into a list as in the default.</p>
+
+<h4>3. The model formula is the standard for R models, but do not use <strong>model.matrix</strong> to implement <strong>oneway</strong>.</h4>
+
+<pre><code class="r">oneway.formula &lt;- function(formula, data=list(), ...) {
+    frames &lt;- model.frame(formula, data)
+    responses &lt;- oneway.factor(frames[,2], frames[,1])
+    responses$call &lt;- match.call()
+    responses
+}
+</code></pre>
+
+<p>You might want to extract the factor term and the response from the <strong>model.frame</strong> and then call <strong>oneway.factor</strong>, which in turn calls <strong>oneway.default</strong>.</p>
+
+<h4>4. The default <strong>print</strong> method should be short and provide essential information.</h4>
+
+<pre><code class="r">print.oneway &lt;- function(x, ...) {
+   print(x$call)
+   cat(&quot;\nWithin SS:&quot;, x$SS[1], &quot;on&quot;, x$df[1],
+       &quot;degrees of freedom.\n&quot;)
+   cat(&quot;Between SS:&quot;, x$SS[2], &quot;on&quot;, x$df[2],
+       &quot;degrees of freedom.\n&quot;)
+}
+</code></pre>
+
+<h4>5. The summary method should create a summary object&mdash;not print directly.</h4>
+
+<pre><code class="r">summary.oneway &lt;- function(object, ...) {
+    attach(object)
+
+    SS.tot &lt;- SS[1] + SS[2]
+    DF.tot &lt;- df[1] + df[2]
+
+    MS.wit &lt;- SS[1]/df[1]
+    MS.bet &lt;- SS[2]/df[2]
+
+    F &lt;- MS.wit/MS.bet
+    p &lt;- pf(F, df[1], df[2], lower.tail = FALSE)
+
+    aov.table &lt;- with(object, cbind(DF = c(df, DF.tot),
+                         SS = c(SS, SS.tot),
+                         MS = c(MS.wit, MS.bet, NA),
+                         F = c(F, NA, NA),
+                         &quot;Pr(&gt;F)&quot; = c(p, NA, NA)))
+    rownames(aov.table) &lt;- c(&quot;Among Group&quot;, &quot;Within Group&quot;,
+                       &quot;Total&quot;)
+    res &lt;- list(call=call, aov.table=aov.table, groups=groups, means=means,
+                P = p, MS = c(MS.wit,MS.bet), n = n, N = N, l = l)
+    class(res) &lt;- &quot;summary.oneway&quot;
+    detach(object)
+    return(res)
+}
+</code></pre>
+
+<p>The argument is a <strong>oneway</strong> object. The summary object should include a component representing an AOV table, e.g., see Dowdy and Wearden. You might want to decide whether objects of class <em>summary.oneway</em> inherit from the class <em>oneway</em>.</p>
+
+<h4>6. The print method for the summary object should provide more detailed information about the summary object.</h4>
+
+<pre><code class="r">print.summary.oneway &lt;- function(x, ...) {
+
+    cat(&quot;print: \n\t&quot;)
+    print(x$call)
+    cat(&quot;\nMeans:\n&quot;)
+    print(x$means)
+    cat(&quot;\n&quot;)
+
+
+    # AOV Table
+
+    printCoefmat(x$aov.table, P.values=TRUE, has.Pvalue=TRUE, signif.stars=TRUE, na.print=&quot;&quot;)
+}
+</code></pre>
+
+<p>The  AOV table should be formatted nicely. The least squares means should also be formated and printed.</p>
+
+<h4>7. Implement Fisher&#39;s LSD multiple comparison procedure for your oneway.</h4>
+
+<pre><code class="r">lsmeans.oneway &lt;- function(object, ...) {
+    object &lt;- summary(object)
+
+    comparison &lt;- function(i, j){
+        d &lt;- object$means[i] - object$means[j]
+        SE &lt;- sqrt(object$MS[2]*(1/object$n[i] + 1/object$n[j]))
+        d.se &lt;- d/SE
+        round(2*pt(abs(d.se), object$N-object$l, lower.tail=FALSE),4)
+    }
+    p.se &lt;- pairwise.table(compare.levels=comparison,
+                             level.names=object$groups,
+                             p.adjust.method=&quot;none&quot;)
+    result &lt;- list(p.value=p.se, call=match.call())
+    class(result) &lt;- &quot;lsmeans&quot;
+    result
+}
+print.lsmeans &lt;- function(x, ...){
+    cat(&quot;Call:\n\t&quot;)
+    print(x$call)
+    cat(&quot;\nFisher&#39;s LSD Table\n&quot;)
+    cat(&quot;\nP-Values:\n&quot;)
+    print.table(x$p.value, na.print=&quot;-&quot;)
+}
+</code></pre>
+
+<p>The argument is a <em>oneway</em> object, which should include the least-squares means as a component. Fisher&#39;s LSD should be computed and formatted nicely.</p>
+
+<h4>8. A plot generic function should be implemented for <em>oneway</em> objects.</h4>
+
+<pre><code class="r">plot.oneway &lt;- function(x, names=x$groups, xlab=&quot;Groups&quot;, main=capture.output(x$call)){
+    boxplot(x=x$data, names=names, xlab=xlab,  main=main)
+}
+</code></pre>
+
+<p>The plot should compare the distributions of the groups in a side-by-side manner.</p>
+
+<h4>9. Your S3 class implementation should be illustrated with the <em>coagulation</em> data set. The data consists of blood coagulation times for 24 animals randomly assigned to four different diets.</h4>
+
+<pre><code class="r">library(faraway)
+data(coagulation)
+coagulation[1:4,]
+</code></pre>
+
+<pre><code>##   coag diet
+## 1   62    A
+## 2   60    A
+## 3   63    A
+## 4   59    A
+</code></pre>
+
+<pre><code class="r">attach(coagulation)
+grouping &lt;- split(x = coag, f = diet)
+oneway.default(grouping)
+</code></pre>
+
+<pre><code>## oneway.default(z = grouping)
+## 
+## Within SS: 228 on 3 degrees of freedom.
+## Between SS: 112 on 20 degrees of freedom.
+</code></pre>
+
+<p>Results are similar in both cases.
+Now lest try out our AOV function.</p>
+
+<pre><code class="r">#analysis ofvariance
+coag.oneway &lt;- oneway.default(grouping)
+summary(coag.oneway)
+</code></pre>
+
+<pre><code>## print: 
+##  oneway.default(z = grouping)
+## 
+## Means:
+##  A  B  C  D 
+## 61 66 68 61 
+## 
+##                 DF    SS    MS      F    Pr(&gt;F)    
+## Among Group    3.0 228.0  76.0 13.571 4.658e-05 ***
+## Within Group  20.0 112.0   5.6                     
+## Total         23.0 340.0                           
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+</code></pre>
+
+<pre><code class="r">#Fisher&#39;s LSD
+lsmeans.oneway(coag.oneway)
+</code></pre>
+
+<pre><code>## Call:
+##  lsmeans.oneway(object = coag.oneway)
+## 
+## Fisher&#39;s LSD Table
+## 
+## P-Values:
+##        A      B      C
+## B 0.0038      -      -
+## C 0.0002 0.1588      -
+## D 1.0000 0.0009 0.0000
+</code></pre>
+
+<p>Finally we visualize the results by plotting them with our function.</p>
+
+<pre><code class="r">plot.oneway(coag.oneway)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-4"/> </p>
+
+<p>You should provide brief explanations of the output along with the output, which implies that you may want multiple chucks of R code interspersed with markdown.</p>
+
+</body>
+
+</html>
