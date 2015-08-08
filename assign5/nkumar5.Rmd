@@ -9,7 +9,7 @@ The file created from `R CMD build` (or similar approaches using `devtools` or R
         	
 #### 1. Start development of a package called `oneway` using the RStudio approach, i.e., start with a project. This initial version should be derived from your S3 classes developed for assignment 4 in the file `oneway.R` or similar files. 
 
-```
+``` 
 #' Perform a oneway analysis of variance
 #'
 #' @param z A list of responses grouped by factor level
