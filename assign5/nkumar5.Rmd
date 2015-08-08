@@ -25,8 +25,8 @@ The file created from `R CMD build` (or similar approaches using `devtools` or R
 #' oneway(coag~diet)
 #' summary(oneway(coag~diet))
 #'
-#' lsmeans.oneway(oneway(coag~diet))
-#' plot.oneway(oneway(coag~diet))
+#' lsmeans(oneway(coag~diet))
+#' plot(oneway(coag~diet))
 #'
 #' @export
 oneway <- function(z, ...) UseMethod("oneway")
