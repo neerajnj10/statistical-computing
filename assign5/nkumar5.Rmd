@@ -16,14 +16,14 @@ The file created from `R CMD build` (or similar approaches using `devtools` or R
 #' @param ... Addition arguments used by other S3 methods
 #'
 #' @seealso \code{\link{oneway.factor}}, \code{\link{oneway.formula}},
-#' \code{\link{summary.oneway}}, \code{\link{plot.oneway}}, \code{\link{lsmeans.oneway}}
+#' \code{\link{summary.oneway}}, \code{\link{plot.oneway}}, \code{\link{lsmeans}}
 #' @examples
 #' data(coagulation)
 #' attach(coagulation)
 #' oneway(split(coag, diet))
 #' oneway(diet, coag)
 #' oneway(coag~diet)
-#' summary(oneway(coag~diet))
+#' summary.oneway(oneway(coag~diet))
 #'
 #' lsmeans(oneway(coag~diet))
 #' plot(oneway(coag~diet))
@@ -61,6 +61,8 @@ oneway.default <- function(z, ...) {
   class(res) <- "oneway"
   return(res)
 }
+
+
 #' oneway.factor
 #'
 #' S3 method for \code{\link{oneway}} using a response vector and factor
@@ -209,22 +211,6 @@ print.lsmeans <- function(x, ...){
   cat("\nP-Values:\n")
   print.table(x$p.value, na.print="-")
 }
-```
-	
-#### 2. Edit the DESCRIPTION file.
-
-```
-Package: oneway
-Type: Package
-Title: Oneway Analysis of Variance
-Version: 0.1
-Date: 2015-08-02
-Author: Neeraj Kumar
-Maintainer: Neeraj Kumar <nekumar@mix.wvu.edu>
-Description: Performs a oneway analysis of variance
-License: GPL-3
-LazyData: TRUE
-
 ```
 
 #### 3. Generate a NAMESPACE file using `roxygen2`. That is, export (or less likely import) appropriate functions or S3 methods.
