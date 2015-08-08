@@ -16,7 +16,7 @@ The file created from `R CMD build` (or similar approaches using `devtools` or R
 #' @param ... Addition arguments used by other S3 methods
 #'
 #' @seealso \code{\link{oneway.factor}}, \code{\link{oneway.formula}},
-#' \code{\link{summary.oneway}}, \code{\link{plot.oneway}}, \code{\link{lsmeans}}
+#' \code{\link{summary.oneway}}, \code{\link{plot.oneway}}, \code{\link{lsmeans.oneway}}
 #' @examples
 #' data(coagulation)
 #' attach(coagulation)
@@ -25,48 +25,42 @@ The file created from `R CMD build` (or similar approaches using `devtools` or R
 #' oneway(coag~diet)
 #' summary(oneway(coag~diet))
 #'
-#' lsmeans(oneway(coag~diet))
-#' plot(oneway(coag~diet))
+#' lsmeans.oneway(oneway(coag~diet))
+#' plot.oneway(oneway(coag~diet))
 #'
 #' @export
 oneway <- function(z, ...) UseMethod("oneway")
-
 #' @export
 oneway.default <- function(z, ...) {
-    ## Make sure we're the right data structure
-    if(!is.list(z) | is.data.frame(z)){
-        stop("data structure is not one of:\nlist, factor & vector, or formula")
-    }
-    ## computing formulas
-    a <- length(z)
-    N <- length(unlist(z))
-    TT <- sum(unlist(z)^2)
-    A <- sum(sapply(z, function(x) sum(x)^2/length(x)))
-    CF <- sum(unlist(z))^2/N
-    ## computes SS's and DF's
-    ss.a <- A - CF ## within
-    ss.e <- TT - A ## between
-    df.a <- a - 1
-    df.e <- N - a
-    ## get LS Means & sample sizes
-    ybar.vec <- unlist(lapply(z, mean))
-    n.vec <- unlist(lapply(z, length))
-    ## find group names
-    if(is.null(names(z))){
-        groups <- as.character(1:length(z))
-    }
-    else{
-        groups <- names(z)
-    }
-    names(ybar.vec) <- groups
-    ## create object, add class, & return
-    res <- list(df = c(df.a, df.e), SS = c(ss.a, ss.e),
-                groups = groups, call = match.call(), data = z,
-                ls.means = ybar.vec, n.vec = n.vec, N = N, a = a)
-    class(res) <- "oneway"
-    return(res)
-}
 
+
+  l <- length(z)
+  N <- length(unlist(z))
+  sums <- sum(unlist(z)^2)
+  g <- sum(sapply(z, function(x) sum(x)^2/length(x)))
+  h <- sum(unlist(z))^2/N
+
+  sum.wit <- g - h ## within
+  sum.bet <- sums - g ## between
+  df.wit <- l - 1
+  df.bet <- N - l
+  m <- unlist(lapply(z, mean))
+  n <- unlist(lapply(z, length))
+
+  if(is.null(names(z))){
+    groups <- as.character(1:length(z))
+  }
+  else{
+    groups <- names(z)
+  }
+  names(m) <- groups
+  ## create object, add class, & return
+  res <- list(df = c(df.wit, df.bet), SS = c(sum.wit, sum.bet),
+              groups = groups, call = match.call(), data = z,
+              means = m, n = n, N = N, l = l)
+  class(res) <- "oneway"
+  return(res)
+}
 #' oneway.factor
 #'
 #' S3 method for \code{\link{oneway}} using a response vector and factor
@@ -79,11 +73,10 @@ oneway.default <- function(z, ...) {
 #'
 #' @export
 oneway.factor <- function(z, y, ...) {
-    foo <- oneway.default(split(y, z))
-    foo$call <- match.call()
-    foo
+  responses <- oneway.default(split(y, z))
+  responses$call <- match.call()
+  responses
 }
-
 #' oneway.formula
 #'
 #' An S3 method for \code{\link{oneway}} for formulas.
@@ -96,19 +89,19 @@ oneway.factor <- function(z, y, ...) {
 #'
 #' @export
 oneway.formula <- function(formula, data=list(), ...) {
-    mf <- model.frame(formula, data)
-    foo <- oneway.factor(mf[,2], mf[,1])
-    foo$call <- match.call()
-    foo
+  frames <- model.frame(formula, data)
+  responses <- oneway.factor(frames[,2], frames[,1])
+  responses$call <- match.call()
+  responses
 }
 
 #' @export
 print.oneway <- function(x, ...) {
-   print(x$call)
-   cat("\nWithin SS:", x$SS[1], "on", x$df[1],
-       "degrees of freedom.\n")
-   cat("Between SS:", x$SS[2], "on", x$df[2],
-       "degrees of freedom.\n")
+  print(x$call)
+  cat("\nWithin SS:", x$SS[1], "on", x$df[1],
+      "degrees of freedom.\n")
+  cat("Between SS:", x$SS[2], "on", x$df[2],
+      "degrees of freedom.\n")
 }
 
 
@@ -121,67 +114,50 @@ print.oneway <- function(x, ...) {
 #'
 #' @export
 summary.oneway <- function(object, ...) {
-    attach(object)
-    ## Get total SS & df
-    ss.t <- SS[1] + SS[2]
-    df.t <- df[1] + df[2]
-    ## Calculate mean squares
-    ms.a <- SS[1]/df[1]
-    ms.e <- SS[2]/df[2]
-    ## get F stat & p-val
-    F <- ms.a/ms.e
-    p <- pf(F, df[1], df[2], lower.tail = FALSE)
+  attach(object)
 
-    ## construct AOV table
-    tab <- with(object, cbind(DF = c(df, df.t),
-                         SS = c(SS, ss.t),
-                         MS = c(ms.a, ms.e, NA),
-                         F = c(F, NA, NA),
-                         "Pr(>F)" = c(p, NA, NA)))
-    rownames(tab) <- c("Among Groups", "Within Groups (error)",
-                       "Total")
-    res <- list(call=call, tab=tab, groups=groups, ls.means=ls.means,
-                P = p, MS = c(ms.a, ms.e), n.vec = n.vec, N = N, a = a)
-    class(res) <- "summary.oneway"
-    detach(object)
-    return(res)
+  SS.tot <- SS[1] + SS[2]
+  DF.tot <- df[1] + df[2]
+
+  MS.wit <- SS[1]/df[1]
+  MS.bet <- SS[2]/df[2]
+
+  F <- MS.wit/MS.bet
+  p <- pf(F, df[1], df[2], lower.tail = FALSE)
+
+  aov.table <- with(object, cbind(DF = c(df, DF.tot),
+                                  SS = c(SS, SS.tot),
+                                  MS = c(MS.wit, MS.bet, NA),
+                                  F = c(F, NA, NA),
+                                  "Pr(>F)" = c(p, NA, NA)))
+  rownames(aov.tab) <- c("Among Group", "Within Group",
+                         "Total")
+  res <- list(call=call, aov.table=aov.table, groups=groups, means=means,
+              P = p, MS = c(MS.wit,MS.bet), n = n, N = N, l = l)
+  class(res) <- "summary.oneway"
+  detach(object)
+  return(res)
 }
 
 #' @export
 print.summary.oneway <- function(x, ...) {
-    ## function call
-    cat("Call:\n\t")
-    print(x$call)
-    ## LS means
-    cat("\nMeans:\n")
-    print(x$ls.means)
-    cat("\n")
-    # AOV Table
-    cat("\nAnalysis of Variance Table:\n")
-    printCoefmat(x$tab, P.values=TRUE, has.Pvalue=TRUE,
-                 signif.stars=TRUE, na.print="")
+
+  cat("print: \n\t")
+  print(x$call)
+  cat("\nMeans:\n")
+  print(x$means)
+  cat("\n")
+
+
+  # AOV Table
+
+  printCoefmat(x$aov.table, P.values=TRUE, has.Pvalue=TRUE, signif.stars=TRUE, na.print="")
 }
 
-#' Creates a side-by-side boxplot of groups in a \code{oneway} object
-#'
-#' @param x A \code{oneway} object
-#' @param xlab X label of graph
-#' @param ylab Y label of graph
-#' @param main Main plot title
-#' @param ... Optional graphing arguments to be passed to
-#' \code{boxplot}
-#'@param names Names of factor levels
-#' @seealso \code{link{boxplot}}
-#'
-#' @export
-plot.oneway <- function(x, names=x$groups, xlab="Group", ylab="Response",
-                        main=capture.output(x$call), ...){
-    boxplot(x=x$data, names=names, xlab=xlab, ylab=ylab, main=main, ...)
-}
 
 #' Perform Fisher's LSD
 #'
-#' Test pairwise differences using Fisher's LSD proceduce on a
+#' Testing  pairwise differences using Fisher's LSD proceduce on a
 #' \code{oneway} object
 #'
 #' @param object A \code{oneway} object
@@ -189,40 +165,49 @@ plot.oneway <- function(x, names=x$groups, xlab="Group", ylab="Response",
 #' @export
 lsmeans <- function(object) UseMethod("lsmeans")
 
-#' @export
-lsmeans.default <- function(object){
-    if(!(class(object)=="oneway")){
-        stop("lsmeans only accepts class \"oneway\"")
-    }
-}
 
 #' @export
-lsmeans.oneway <- function(object) {
-    object <- summary(object)
-    if(object$P > 0.05){
-        warning("F-test is not significant at alpha=0.05.")
-    }
-    compare <- function(i, j){
-        d <- object$ls.means[i] - object$ls.means[j]
-        s.e <- sqrt(object$MS[2]*(1/object$n.vec[i] + 1/object$n.vec[j]))
-        t.val <- d/s.e
-        round(2*pt(abs(t.val), object$N-object$a, lower.tail=FALSE),4)
-    }
-    p.vals <- pairwise.table(compare.levels=compare,
-                             level.names=object$groups,
-                             p.adjust.method="none")
-    result <- list(p.value=p.vals, call=match.call())
-    class(result) <- "lsmeans"
-    result
+lsmeans.oneway <- function(object, ...) {
+  object <- summary(object)
+
+  comparison <- function(i, j){
+    d <- object$means[i] - object$means[j]
+    SE <- sqrt(object$MS[2]*(1/object$n[i] + 1/object$n[j]))
+    d.se <- d/SE
+    round(2*pt(abs(d.se), object$N-object$l, lower.tail=FALSE),4)
+  }
+  p.se <- pairwise.table(compare.levels=compare,
+                         level.names=object$groups,
+                         p.adjust.method="none")
+  result <- list(p.value=p.se, call=match.call())
+  class(result) <- "lsmeans"
+  result
 }
+
+#' Creating boxplot of groups in a \code{oneway} object
+#'
+#' @param x A \code{oneway} object
+#' @param xlab X label
+#' @param ylab Y label
+#' @param main Main plot title
+#' @param ... Optional graphing arguments to be passed to
+#' \code{boxplot}
+#'@param names Names of factor levels
+#' @seealso \code{link{boxplot}}
+#'
+#' @export
+plot.oneway <- function(x, names=x$groups, xlab="Grouping variable",ylab="Response variable", main=capture.output(x$call)){
+  boxplot(x=x$data, names=names, xlab=xlab,  main=main)
+}
+
 
 #' @export
 print.lsmeans <- function(x, ...){
-    cat("Call:\n\t")
-    print(x$call)
-    cat("\nFisher's LSD Table\n")
-    cat("\nP-Values:\n")
-    print.table(x$p.value, na.print="-")
+  cat("Call:\n\t")
+  print(x$call)
+  cat("\nFisher's LSD Table\n")
+  cat("\nP-Values:\n")
+  print.table(x$p.value, na.print="-")
 }
 ```
 	
@@ -234,11 +219,12 @@ Type: Package
 Title: Oneway Analysis of Variance
 Version: 0.1
 Date: 2015-08-02
-Author: Doug Raffle
-Maintainer: Doug Raffle <dcraffle@mix.wvu.edu>
-Description: Performs a oneway analysis of variance given: a named list of samples, a vector of responses and a factor with the group labels, or a formula.
+Author: Neeraj Kumar
+Maintainer: Neeraj Kumar <nekumar@mix.wvu.edu>
+Description: Performs a oneway analysis of variance
 License: GPL-3
 LazyData: TRUE
+
 ```
 
 #### 3. Generate a NAMESPACE file using `roxygen2`. That is, export (or less likely import) appropriate functions or S3 methods.
@@ -276,11 +262,8 @@ save(coagulation, file = "./data/coagulation.rda")
 #### 8. Show the output from the help files using: `library(oneway)`, `help(oneway)`, help for specific functions, and `help(coagulation)`, etc.
 ```{r oneway.help}
 library(devtools)
-install_github("raffled/oneway")
+install_github("neerajnj10/oneway")
 
-## OR from source
-install.packages("oneway_0.1_R_x86_64-pc-linux-gnu.tar.gz",
-                 repos = NULL, type = "source")
                  
 library(utils)
 library(tools)
@@ -296,7 +279,7 @@ print.help("oneway.factor")
 print.help("oneway.formula")
 print.help("summary.oneway")
 print.help("plot.oneway")
-print.help("lsmeans")
+print.help("lsmeans.oneway")
 print.help("coagulation")
 ```
 The help files should provide all relevant information.
