@@ -6,7 +6,7 @@ output: html_document
 
 ### Assignment 3: One-Way S3 Package
 
-**source code for package** would be updated as a link here soon:**
+**source code for package would be updated as a link here soon:**
 
 The file created from `R CMD build` (or similar approaches using `devtools` or RStudio shortcuts) should be submitted along with this file and its pdf output. I should be able to install the package---perhaps from GitHub.
 
