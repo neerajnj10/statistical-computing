@@ -1,3 +1,6 @@
+---
+output: html_document
+---
 
 ## Statistics 523  
 
@@ -9,7 +12,7 @@ The file created from `R CMD build` (or similar approaches using `devtools` or R
         	
 #### 1. Start development of a package called `oneway` using the RStudio approach, i.e., start with a project. This initial version should be derived from your S3 classes developed for assignment 4 in the file `oneway.R` or similar files. 
 
-``` 
+```
 #' Perform a oneway analysis of variance
 #'
 #' @param z A list of responses grouped by factor level
@@ -212,6 +215,22 @@ print.lsmeans <- function(x, ...){
   print.table(x$p.value, na.print="-")
 }
 ```
+	
+#### 2. Edit the DESCRIPTION file.
+
+```
+Package: oneway
+Type: Package
+Title: Oneway Analysis of Variance
+Version: 0.1
+Date: 2015-08-02
+Author: Neeraj Kumar
+Maintainer: Neeraj Kumar <nekumar@mix.wvu.edu>
+Description: Performs a oneway analysis of variance
+License: GPL-3
+LazyData: TRUE
+
+```
 
 #### 3. Generate a NAMESPACE file using `roxygen2`. That is, export (or less likely import) appropriate functions or S3 methods.
 
@@ -244,15 +263,20 @@ save(coagulation, file = "./data/coagulation.rda")
 #### 6. Develop a help file called `coagulation.Rd`, which contains the help information for the `coagulation` data set. This file should be placed in the `man` subdirectory. Again use `roxygen2`.
 
 #### 7. Build the package using the `R CMD build` and the `R CMD check` commands or by RStudio commands or `devtools`. The process should be iterated until bugs are found and corrected. You can use the debugging tools you have learned. Once complete, install the package.
+
+```{r}
+### => R CMD INSTALL --no-multiarch --with-keep.source oneway
+```
 	
 #### 8. Show the output from the help files using: `library(oneway)`, `help(oneway)`, help for specific functions, and `help(coagulation)`, etc.
 ```{r oneway.help}
 library(devtools)
-install_github("neerajnj10/oneway")
-
-                 
 library(utils)
 library(tools)
+#install_github("neerajnj10/oneway") #working on it currently to commit & push files.
+library(oneway)
+                 
+
 print.help <- function(topic){
   help.raw <- utils:::.getHelpFile(help(topic))
   help.txt <- capture.output(tools:::Rd2txt(help.raw))
@@ -265,13 +289,13 @@ print.help("oneway.factor")
 print.help("oneway.formula")
 print.help("summary.oneway")
 print.help("plot.oneway")
-print.help("lsmeans.oneway")
-print.help("coagulation")
+print.help("lsmeans")
+#print.help("coagulation") #doesn't read the help for coagulation data.
 ```
 The help files should provide all relevant information.
 
 #### 9. Illustrate your functions using:  
 ```{r oneway.example}
-example(oneway)
+#example(oneway) ##only summary.oneway is not working
 ```
 The example should illustrate all aspects of your code.
